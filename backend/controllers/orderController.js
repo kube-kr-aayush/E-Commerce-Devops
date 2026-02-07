@@ -1,6 +1,6 @@
 import orderModel from "../models/orderModel.js";
 import userModel from "../models/userModel.js";
-import razorpay from 'razorpay'
+
 
 //global variables
 const currency='inr'
@@ -12,14 +12,6 @@ const deliveryCharge=10
 
 let razorpay = null;
 
-if (process.env.NODE_ENV !== "production") {
-  console.log("Razorpay disabled for non-production environment");
-} else {
-  razorpay = new Razorpay({
-    key_id: process.env.RAZORPAY_KEY,
-    key_secret: process.env.RAZORPAY_SECRET,
-  });
-}
 
 
 //Placing order using cod method

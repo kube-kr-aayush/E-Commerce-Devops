@@ -8,10 +8,19 @@ const deliveryCharge=10
 
 
 
-const razorpayInstance=new razorpay({
-    key_id:process.env.RAZORPAY_KEY_ID,
-    key_secret:process.env.RAZORPAY_KEY_SECRET
-})
+
+
+let razorpay = null;
+
+if (process.env.NODE_ENV !== "production") {
+  console.log("Razorpay disabled for non-production environment");
+} else {
+  razorpay = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY,
+    key_secret: process.env.RAZORPAY_SECRET,
+  });
+}
+
 
 //Placing order using cod method
 const placeOrder=async(req,res)=>{

@@ -1,0 +1,25 @@
+# E-Commerce DevOps Project
+
+## Overview
+End-to-end DevOps and GitOps implementation for a full-stack e-commerce application deployed on AWS.
+
+## Tech Stack
+- AWS EC2
+- Docker
+- Jenkins (CI)
+- Kubernetes
+- Argo CD (GitOps CD)
+- NGINX Ingress
+
+## What I Worked On
+- Containerization of frontend, backend, and database
+- CI pipelines using Jenkins
+- GitOps-based deployments with Argo CD
+- Kubernetes deployments and ingress configuration
+- Production-style debugging and stability fixes
+
+## Architecture
+(Add diagram / 1 image)
+
+## Status
+Project completed for learning and demonstration purposes.

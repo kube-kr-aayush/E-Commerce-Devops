@@ -31,6 +31,9 @@ app.use("/api/product",productRouter)
 app.use("/api/cart",cartRouter)
 app.use('/api/order',orderRouter)
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ status: "ok" });
+});
 
 
 

@@ -1,0 +1,577 @@
+Project Title
+
+End-to-End DevOps & GitOps Implementation for E-Commerce Application
+
+1. Project Overview
+
+This repository demonstrates a complete DevOps and GitOps workflow for deploying a full-stack e-commerce application using Docker, Jenkins, Kubernetes, and Argo CD, hosted on an AWS EC2–based environment.
+
+The focus of this project is deployment, automation, and real-world debugging, rather than application feature development.
+
+⚠️ Note:
+The web application (frontend & backend) was developed separately.
+My primary contribution is on the DevOps, Cloud, CI/CD, Kubernetes, and GitOps side.
+
+2. Objectives of This Project
+
+- Learn real-world DevOps workflows beyond tutorials
+
+- Implement CI using Jenkins
+
+- Implement GitOps-based CD using Argo CD
+
+- Deploy and manage applications on Kubernetes
+
+- Understand production-like debugging scenarios
+
+- Gain hands-on experience with AWS-based infrastructure
+
+3. High-Level Architecture
+Developer → GitHub
+            ↓
+        Jenkins (CI)
+            ↓
+     Docker Images
+            ↓
+        GitOps Repo
+            ↓
+        Argo CD
+            ↓
+     Kubernetes Cluster
+     (Frontend, Backend, MongoDB)
+            ↓
+      NGINX Ingress
+            ↓
+        End Users
+
+4. Technology Stack
+Cloud & Infrastructure
+
+ -AWS EC2 (Linux-based VM)
+
+ -Ubuntu Server
+
+Containerization
+
+ -Docker
+
+ -Docker Compose (local orchestration)
+
+CI/CD
+
+  -Jenkins (CI)
+
+  -Argo CD (GitOps-based CD)
+
+Orchestration
+
+  -Kubernetes (kind cluster)
+
+Networking
+
+  -NGINX Ingress Controller
+
+Database
+
+  -MongoDB
+
+5. Repository Structure (Logical)
+E-Commerce-Devops/
+├── backend/                # Backend service
+│   ├── Dockerfile
+│   └── app source
+│
+├── frontend/               # Frontend service
+│   ├── Dockerfile
+│   └── build output
+│
+├── admin/                  # Admin UI (if applicable)
+│
+├── docker-compose.yml      # Local development
+│
+└── ecommerce-gitops/       # GitOps manifests
+    ├── backend/
+    ├── frontend/
+    ├── mongo/
+    └── ingress/
+
+6. Project Phases (Summary)
+
+This project was completed in incremental phases:
+
+1- Dockerization of services
+
+2- Database migration setup
+
+3- Local orchestration using Docker Compose
+
+4- CI pipeline setup using Jenkins
+
+5- GitOps-based deployment using Argo CD
+
+6- Kubernetes debugging & ingress configuration
+
+7- Production-style stability & observability concepts
+
+(Each phase is explained in detail in later sections.)
+
+7. Role & Scope of Work
+My Responsibilities
+
+ -Dockerized all services
+
+ -Designed and implemented CI pipeline
+
+ -Set up Kubernetes deployments and services
+
+ -Implemented GitOps using Argo CD
+
+ -Configured ingress routing
+
+ -Debugged real-world deployment issues
+
+ -Ensured deployment stability
+
+Out of Scope
+
+ -Feature development of frontend/backend
+
+ -UI/UX changes
+
+ -Business logic changes
+
+8. Why GitOps?
+
+GitOps was chosen to:
+
+ -Maintain a single source of truth
+
+ -Enable declarative deployments
+
+ -Simplify rollbacks and change tracking
+
+ -Separate CI and CD responsibilities
+
+CI builds artifacts.
+CD deploys declared state.
+
+9. Project Status
+
+✔ Core DevOps workflow completed
+✔ Kubernetes deployment stable
+✔ CI/CD pipelines functional
+✔ Project finalized for learning and demonstration
+
+10. Dockerization Strategy
+
+Each service was containerized independently to ensure isolation, portability, and reproducibility.
+
+Services Containerized
+
+ -Frontend
+
+ -Backend
+
+ -MongoDB
+
+Key Decisions
+
+ -Separate Dockerfiles for frontend and backend
+
+ -Multi-stage build used where applicable
+
+ -Environment variables injected at runtime
+
+ -Application logs written to stdout/stderr for Kubernetes compatibility
+
+This allowed the same images to be reused across:
+
+ -Local development
+
+ -CI pipelines
+
+ -Kubernetes deployments
+
+11. Local Development with Docker Compose
+
+Before moving to Kubernetes, the application was validated locally using Docker Compose.
+
+Purpose
+
+ -Validate container builds
+
+ -Test service-to-service communication
+
+ -Test database migrations
+
+ -Debug application startup issues early
+
+Services in docker-compose
+
+ -frontend
+
+ -backend
+
+ -mongo
+
+Outcome
+
+ -Backend successfully connected to MongoDB
+
+ -Database migrations executed correctly
+
+ -Application verified before CI/CD
+
+12. Database Migration Handling
+
+A simple migration mechanism was implemented in the backend to ensure:
+
+ -Database initialization happens once
+
+ -Migrations are idempotent
+
+ -Application restarts do not corrupt data
+
+ Migration Flow
+
+ 1-Backend container starts
+
+ 2-Migration script checks existing versions
+
+ 3-Already-applied migrations are skipped
+
+ 4-New migrations are applied safely
+
+This same mechanism was reused in Kubernetes without modification.
+
+13. Continuous Integration (CI) using Jenkins
+
+A Jenkins pipeline was created to automate the build process.
+
+CI Responsibilities
+
+ -Pull latest code from GitHub
+
+ -Build Docker images
+
+ -Tag images consistently
+
+ -Push images to local/registry (based on environment)
+
+CI/CD Separation
+
+ -Jenkins handles build and validation
+
+ -Deployment is not handled by Jenkins
+
+ -Deployment responsibility is delegated to GitOps (Argo CD)
+
+This follows industry best practices.
+
+14. GitOps Repository Design
+
+A separate GitOps directory/repository was used to store Kubernetes manifests.
+
+Why Separate GitOps Repo?
+
+ -Clear separation between application code and deployment state
+
+ -Git becomes the single source of truth
+
+ -Easy rollback by reverting commits
+
+GitOps Structure
+ecommerce-gitops/
+├── backend/
+│   ├── deployment.yaml
+│   └── service.yaml
+│
+├── frontend/
+│   ├── deployment.yaml
+│   └── service.yaml
+│
+├── mongo/
+│   ├── deployment.yaml
+│   └── service.yaml
+│
+└── ingress/
+    └── ingress.yaml
+
+
+Each component was deployed and managed independently.
+
+15. Kubernetes Deployment Strategy
+Cluster
+
+ -Kubernetes cluster running on AWS EC2
+
+ -Local cluster setup used for learning and control
+
+Kubernetes Objects Used
+
+ - Deployments
+
+ - Services (ClusterIP)
+
+ - Ingress
+
+ - ConfigMaps / Secrets (basic usage)
+
+Deployment Principles
+
+ - One deployment per service
+
+ - Stateless frontend & backend
+
+ - Database isolated in its own deployment
+
+ - Clear port mapping and service exposure
+
+16. GitOps Continuous Deployment using Argo CD
+
+Argo CD was used to continuously sync Kubernetes state from Git.
+
+Argo CD Responsibilities
+
+ - Monitor GitOps repository
+
+ - Detect changes in manifests
+
+ - Apply changes to Kubernetes cluster
+
+ - Report application health and sync status
+
+Applications Managed
+
+ - Backend
+
+ - Frontend
+
+ - MongoDB
+
+ - Ingress
+
+Each application was visible in the Argo CD dashboard with:
+
+ - Sync status
+
+ - Health status
+
+ - Deployment history
+
+17. Ingress Configuration
+
+NGINX Ingress Controller was used to expose services externally.
+
+Ingress Responsibilities
+
+ - Route external traffic to frontend
+
+ - Route API calls to backend
+
+ - Centralized traffic entry point
+
+Key Learnings
+
+ - Path matching (Prefix vs regex) matters
+
+ - Service endpoints must be healthy
+
+ - Ingress errors often indicate backend issues, not ingress misconfiguration
+
+18. CI → CD Flow Summary
+Code Push → Jenkins CI → Docker Image
+                           ↓
+                    GitOps Manifest Update
+                           ↓
+                        Argo CD
+                           ↓
+                      Kubernetes
+
+
+This clear separation improved reliability and debuggability.
+19. Real-World Debugging Scenarios Faced
+
+This project involved multiple production-like failures, which were debugged step by step using logs, Kubernetes events, and GitOps status.
+
+19.1 Pod CrashLoopBackOff
+
+Issue:
+
+ - Backend pod kept restarting
+
+Root Causes Identified:
+
+ - Missing environment variables
+
+ - Database not reachable during startup
+
+ - Image mismatch with application code
+
+Resolution:
+
+ = Checked pod logs using kubectl logs
+
+ - Verified environment variables in deployment
+
+ - Ensured database readiness before backend startup
+
+19.2 Image Version Mismatch (GitOps Pitfall)
+
+Issue:
+
+ - Code changes pushed to GitHub but not reflected in running pods
+
+Root Cause:
+
+ - Kubernetes was running an older Docker image
+
+ - Git push does not automatically trigger image rebuild
+
+Resolution:
+
+ - Rebuilt Docker images with new tags
+
+ - Updated image references in GitOps manifests
+
+ - Triggered redeployment via Argo CD
+
+Key Learning:
+ 
+ - Kubernetes runs images, not source code.
+
+19.3 Ingress 503 Errors
+
+Issue:
+
+ - Ingress returning 503 Service Unavailable
+
+Root Causes:
+
+ - Backend pods not healthy
+
+ - No active service endpoints
+
+Resolution:
+
+ - Verified backend pod health
+
+ - Checked service endpoints
+
+ - Ensured correct path matching in ingress rules
+
+Key Learning:
+
+ - Ingress issues are often backend health issues.
+
+20. Logging-Based Debugging Approach
+
+Logging was the primary debugging tool used.
+
+Tools Used
+
+ --  kubectl logs
+
+ --  kubectl logs --previous
+
+ --  kubectl describe pod
+
+Strategy
+
+ 1- Verify pod status
+
+ 2- Inspect container logs
+
+ 3- Identify application-level vs infrastructure-level issues
+
+ 4-Fix root cause instead of restarting blindly
+
+This mirrors real-world on-call debugging practices.
+
+21. GitOps vs Traditional CD
+Traditional CD
+
+ - CI builds and deploys
+
+ - Direct cluster access from CI tools
+
+ - Harder rollbacks
+
+GitOps (Used in this Project)
+
+ - CI builds artifacts only
+
+ - Git is the source of truth
+
+ - Argo CD applies desired state
+
+ - Easy rollback via Git history
+
+Outcome:
+Improved clarity, stability, and auditability.
+
+22. Fork vs Collaboration Decision
+
+The application repository was maintained as a fork.
+
+Reasoning
+
+ - Original project was still under active development
+
+ - Fork ensured a stable snapshot for DevOps work
+
+ - Avoided unexpected breaking changes
+
+Industry-Aligned Decision:
+
+Forking allows infrastructure work to remain stable while application code evolves independently.
+
+23. Monitoring & Observability (Scope Decision)
+
+Basic monitoring concepts were explored, including:
+
+ - Resource metrics
+
+ - Pod health visibility
+
+Advanced monitoring tools (Prometheus/Grafana) were intentionally not fully integrated due to local cluster limitations.
+
+Design Choice:
+
+Focus was placed on core Kubernetes stability and debugging rather than tooling complexity.
+
+This reflects real engineering trade-offs.
+
+24. Key Design Decisions Summary
+Area	               Decision
+ - CI/CD	                 - CI builds artifacts, CD handled via GitOps
+ - Deployment	             - Declarative Kubernetes manifests
+ - Repo Strategy	         - Forked application repository
+ - Debugging	             - Logs-first approach
+ - Monitoring	             - Lightweight, concept-focused
+ - Cloud	                 - AWS EC2-based environment
+25. Interview-Ready Takeaways
+
+Strong understanding of Kubernetes deployment lifecycle
+
+Practical GitOps experience using Argo CD
+
+Real-world debugging of production-like issues
+
+Clear separation of CI and CD responsibilities
+
+Awareness of trade-offs and scope boundaries
+
+26. Project Completion Status
+
+✔ End-to-end DevOps workflow implemented
+✔ CI/CD pipelines validated
+✔ Kubernetes deployment stable
+✔ GitOps model successfully applied
+✔ Project completed for learning and demonstration
+
+Final Credits
+
+Web Application (Frontend & Backend): Original Project Owner
+
+DevOps, Cloud, CI/CD & Kubernetes: Aayush
